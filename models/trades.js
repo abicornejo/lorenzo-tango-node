@@ -4,8 +4,11 @@
 
 // Uncomment the code below to use Mongoose ORM
 const mongoose = require('mongoose');
+const autoIncrement = require("mongoose-auto-increment");
 
-
+const conBase = require('./../lib/mongoose.connection');
+const con= new conBase();
+con.getConnection();
 // Insert your model definition below
 
 let CounterSchema = mongoose.Schema({
@@ -60,19 +63,20 @@ const schema = new mongoose.Schema(
     }
 );
 
-// schema.pre('save', function(next) {
-//     //if (this.isNew) {
-//         let doc = this;
-//         counter.findAndModify({_id: 'entityId'}, {$inc: { seq: 1} }, function(error, counter)   {
-//             if(error)
-//                 return next(error);
-//             doc.id = counter.seq;
-//             next();
-//         });
-//     /*} else {
-//         next();
-//     }*/
-// });
+schema.pre('save', function(next) {
+    //if (this.isNew) {
+        let doc = this;
+        counter.findByIdAndUpdate({_id: 'entityId'}, {$inc: { seq: 1} }, function(error, counter)   {
+            if(error)
+                return next(error);
+            doc.id = counter.seq;
+            next();
+        });
+    /*} else {
+        next();
+    }*/
+});
 
-
-module.exports = mongoose.model("trade", schema);
+//Creating the collection Address
+const Trade = mongoose.model('trade', schema);
+module.exports = Trade;
