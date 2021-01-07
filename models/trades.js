@@ -23,7 +23,7 @@ const schema = new mongoose.Schema(
             required: true,
         },
         type: {
-            desc: "user roles.",
+            desc: "type trade.",
             trim: true,
             type: String,
             enum: ["buy", "sell"],
@@ -38,41 +38,41 @@ const schema = new mongoose.Schema(
             required: true,
         },
         symbol: {
-            desc: "user password",
+            desc: "trade symbol",
             type: String,
             required: true,
         },
         shares: {
-            desc: "The user's name.",
+            desc: "Trade shares.",
             type: Number,
             required: true,
         },
         price: {
-            desc: "The users's age.",
+            desc: "Trade price.",
             type: Number,
             required: true,
         },
     },
     {
         strict: true,
-        versionKey: true,
+        versionKey: false,
         timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
     }
 );
 
-schema.pre('save', function(next) {
-    //if (this.isNew) {
-        let doc = this;
-        counter.findByIdAndUpdate({_id: 'entityId'}, {$inc: { seq: 1} }, function(error, counter)   {
-            if(error)
-                return next(error);
-            doc.id = counter.seq;
-            next();
-        });
-    /*} else {
-        next();
-    }*/
-});
+// schema.pre('save', function(next) {
+//     //if (this.isNew) {
+//         let doc = this;
+//         counter.findAndModify({_id: 'entityId'}, {$inc: { seq: 1} }, function(error, counter)   {
+//             if(error)
+//                 return next(error);
+//             doc.id = counter.seq;
+//             next();
+//         });
+//     /*} else {
+//         next();
+//     }*/
+// });
 
 
 module.exports = mongoose.model("trade", schema);

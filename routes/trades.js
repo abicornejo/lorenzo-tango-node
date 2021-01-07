@@ -10,6 +10,7 @@ router.post('/create', function(req, res, next) {
      * Create a trade
      */
     const trade = new tradeModel({
+        id: req.body.id,
         type: req.body.type,
         user_id: req.body.user_id,
         symbol: req.body.symbol,
@@ -24,7 +25,7 @@ router.post('/create', function(req, res, next) {
         })
         .catch((err) => {
             res.status(500).send({
-                message: err.message || "Some error occurred while creating the User.",
+                message: err.message || "Some error occurred while creating the trade.",
             });
         });
 
@@ -36,11 +37,33 @@ router.put('/update', function(req, res, next) {
 });
 
 router.get('/show', function(req, res, next) {
-    res.send('<p>Hola  mundo</p>');
+    tradeModel.find()
+        .sort({ name: -1 })
+        .then((trades) => {
+            res.status(200).send(trades);
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Error Occured",
+            });
+        });
 });
 
 router.delete('/delete/:id', function(req, res, next) {
-    res.send('<p>Hola  mundo</p>');
+    tradeModel.findByIdAndRemove(req.params.id)
+        .then((trade) => {
+            if (!trade) {
+                return res.status(404).send({
+                    message: "Trade not found ",
+                });
+            }
+            res.send({ message: "Trade deleted successfully!" });
+        })
+        .catch((err) => {
+            return res.status(500).send({
+                message: "Could not delete trade ",
+            });
+        });
 });
 
 module.exports = router;
